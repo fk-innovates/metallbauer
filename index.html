@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f4e79">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Metallbauer">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Gesellenprüfung Metallbauer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+</head>
+<body>
+<style>
+/* Layout: Schriftfeld einer technischen Zeichnung als Kopf, darunter eine Arbeitsfläche im Stahlblech-Ton; eine Spalte, max. 760px */
+:root{
+  --bg:#eef1f3; --sheet:#ffffff; --ink:#1b232b; --muted:#5b6873; --line:#c9d1d8;
+  --steel:#1f4e79; --steel-soft:#dde7f1; --zinc:#8a99a6;
+  --ok:#1d7a46; --ok-soft:#dff1e6; --bad:#b3261e; --bad-soft:#f8e1df; --warn:#a8650a;
+  --f-disp:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#13181d; --sheet:#1b2228; --ink:#e4e9ee; --muted:#9aa7b2; --line:#33404b;
+  --steel:#7fb2e5; --steel-soft:#22374b; --zinc:#6f7f8c;
+  --ok:#5ccf8b; --ok-soft:#173527; --bad:#f08a80; --bad-soft:#3d1e1c; --warn:#e0a54a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#13181d; --sheet:#1b2228; --ink:#e4e9ee; --muted:#9aa7b2; --line:#33404b;
+  --steel:#7fb2e5; --steel-soft:#22374b; --zinc:#6f7f8c;
+  --ok:#5ccf8b; --ok-soft:#173527; --bad:#f08a80; --bad-soft:#3d1e1c; --warn:#e0a54a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--f-disp);font-weight:700;letter-spacing:.01em;text-wrap:balance;margin:0;line-height:1.1}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,.opt:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* Schriftfeld */
+.tb{background:var(--sheet);border:2px solid var(--ink);display:grid;grid-template-columns:1fr auto;}
+.tb>div{border:1px solid var(--ink);padding:8px 12px;min-width:0}
+.tb .lbl{font-family:var(--f-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block}
+.tb .title{grid-column:1/2;grid-row:1/3}
+.tb .title h1{font-size:clamp(28px,6vw,40px)}
+.tb .title p{margin:2px 0 0;color:var(--muted);font-size:15px}
+.tb .val{font-family:var(--f-disp);font-size:20px;font-weight:600}
+.tb .foot{grid-column:1/3;display:flex;gap:0;padding:0}
+.tb .foot>div{flex:1;padding:6px 12px;border-right:1px solid var(--ink);min-width:0}
+.tb .foot>div:last-child{border-right:0}
+@media (max-width:520px){.tb{grid-template-columns:1fr}.tb .title{grid-row:auto}.tb .foot{grid-column:1}.tb .foot{flex-wrap:wrap}.tb .foot>div{flex:1 1 45%;border-bottom:1px solid var(--ink)}}
+
+.nav{display:flex;gap:6px;flex-wrap:wrap}
+.nav button{background:var(--sheet);border:1px solid var(--line);padding:8px 14px;font-family:var(--f-disp);font-size:18px;font-weight:600;border-radius:3px}
+.nav button[aria-current="true"]{background:var(--steel);color:var(--sheet);border-color:var(--steel)}
+
+.panel{background:var(--sheet);border:1px solid var(--line);border-radius:4px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.panel h2{font-size:26px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--steel)}
+.bar>i.ok{background:var(--ok)}
+
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.cat{background:var(--sheet);border:1px solid var(--line);border-radius:4px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:6px}
+.cat:hover{border-color:var(--steel)}
+.cat .t{font-family:var(--f-disp);font-size:19px;font-weight:600;line-height:1.15}
+.cat .m{font-size:13px;color:var(--muted);display:flex;justify-content:space-between}
+.tag{font-family:var(--f-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--steel);border:1px solid var(--steel);padding:1px 5px;border-radius:2px;align-self:flex-start}
+
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:400}
+td.r,th.r{text-align:right}
+.tblwrap{overflow-x:auto}
+
+.btn{background:var(--steel);color:var(--sheet);border:0;border-radius:3px;padding:11px 18px;font-family:var(--f-disp);font-size:19px;font-weight:600}
+.btn.sec{background:transparent;color:var(--steel);border:1px solid var(--steel)}
+.btn:disabled{opacity:.45;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* Frage */
+.qhead{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.qtext{font-size:20px;font-weight:600;line-height:1.35;margin:0}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;background:var(--sheet);border:1px solid var(--line);border-radius:4px;padding:12px 14px;line-height:1.4}
+.opt:hover:not(:disabled){border-color:var(--steel)}
+.opt .k{font-family:var(--f-mono);font-weight:600;color:var(--muted);min-width:1.2em}
+.opt.sel{border-color:var(--steel);background:var(--steel-soft)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt:disabled{cursor:default}
+.expl{border-left:3px solid var(--steel);background:var(--steel-soft);padding:10px 14px;border-radius:0 4px 4px 0}
+.expl b{font-family:var(--f-disp);font-size:18px}
+.verdict.ok{color:var(--ok)} .verdict.bad{color:var(--bad)}
+
+/* Karten */
+.card{border:1px solid var(--line);border-radius:4px;padding:18px;background:var(--sheet);display:flex;flex-direction:column;gap:12px;min-height:200px}
+.card .ans{border-top:1px dashed var(--line);padding-top:12px}
+
+.grade{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.grade .big{font-family:var(--f-disp);font-size:56px;font-weight:700;line-height:1}
+.pill{display:inline-block;padding:2px 10px;border-radius:20px;font-family:var(--f-disp);font-size:18px;font-weight:600}
+.pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.bad{background:var(--bad-soft);color:var(--bad)}
+.timer{font-family:var(--f-mono);font-size:15px}
+.timer.low{color:var(--bad)}
+details summary{cursor:pointer;font-weight:600}
+.note{font-size:14px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+@media (prefers-reduced-motion:no-preference){.opt,.cat{transition:border-color .12s,background .12s}}
+</style>
+
+<div class="wrap">
+  <header class="tb" aria-label="Schriftfeld">
+    <div class="title"><span class="lbl">Benennung</span><h1>Gesellenprüfung Metallbauer</h1><p>Fachrichtung Konstruktionstechnik · Lern- und Prüfungstrainer</p></div>
+    <div><span class="lbl">Fragen</span><span class="val num" id="tbQ">–</span></div>
+    <div><span class="lbl">Sicher gelernt</span><span class="val num" id="tbK">0 %</span></div>
+    <div class="foot">
+      <div><span class="lbl">Grundlage</span><span class="small">MetallbauAusbV 2008 §§ 6–9</span></div>
+      <div><span class="lbl">Teil 2 schriftlich</span><span class="small">KT 2 h · FA 2 h · WiSo 1 h</span></div>
+      <div><span class="lbl">Blatt</span><span class="small num" id="tbView">Start</span></div>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Bereiche">
+    <button data-go="start">Übersicht</button>
+    <button data-go="lernen">Lernen</button>
+    <button data-go="pruefung">Prüfung</button>
+    <button data-go="fehler">Fehler</button>
+    <button data-go="karten">Fachgespräch</button>
+  </nav>
+
+  <main id="view"><div class="panel"><p class="muted">Fragen werden geladen …</p></div></main>
+</div>
+
+<script>
+const CATS={
+  W:{n:"Werkstofftechnik",b:"KT"},F:{n:"Fertigungsverfahren",b:"KT"},S:{n:"Schweißen & Fügen",b:"KT"},
+  K:{n:"Korrosionsschutz",b:"KT"},B:{n:"Bauelemente & Normen",b:"KT"},M:{n:"Technische Mathematik",b:"KT"},
+  Z:{n:"Technisches Zeichnen",b:"KT"},ST:{n:"Statik & Festigkeit",b:"KT"},
+  E:{n:"Elektrotechnik",b:"FA"},SG:{n:"Steuerung, Tore, Pneumatik",b:"FA"},MI:{n:"Montage & Instandhaltung",b:"FA"},
+  A:{n:"Arbeitsschutz, Umwelt, QM",b:"KT+FA"},WS:{n:"Wirtschafts- und Sozialkunde",b:"WiSo"}
+};
+const EXAMS={
+  KT:{n:"Konstruktionstechnik",cats:["W","F","S","K","B","M","Z","ST","A"],count:30,min:60},
+  FA:{n:"Funktionsanalyse",cats:["E","SG","MI","A","M"],count:30,min:60},
+  WS:{n:"Wirtschafts- und Sozialkunde",cats:["WS"],count:20,min:30}
+};
+let Q=[],C=[],S={q:{},c:{}};
+const KEY="mb-kt-gp-v1";
+function load(){try{const r=localStorage.getItem(KEY);if(r)S=Object.assign({q:{},c:{}},JSON.parse(r))}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const st=i=>S.q[i]||{s:0,c:0,w:0,streak:0};
+const known=i=>st(i).streak>=2;
+function record(i,ok){const o=st(i);o.s++;ok?(o.c++,o.streak++):(o.w++,o.streak=0);S.q[i]=o;save();header()}
+function header(){
+  $("#tbQ").textContent=Q.length;
+  const k=Q.filter((_,i)=>known(i)).length;
+  $("#tbK").textContent=Q.length?Math.round(k/Q.length*100)+" %":"0 %";
+}
+function grade(p){
+  if(p>=92)return["sehr gut",1];if(p>=81)return["gut",2];if(p>=67)return["befriedigend",3];
+  if(p>=50)return["ausreichend",4];if(p>=30)return["mangelhaft",5];return["ungenügend",6];
+}
+
+/* ---------- Routing ---------- */
+const VIEWS={start:"Übersicht",lernen:"Lernen",pruefung:"Prüfung",fehler:"Fehler",karten:"Fachgespräch"};
+let timerId=null;
+function go(v){
+  if(!VIEWS[v])v="start";
+  if(timerId){clearInterval(timerId);timerId=null}
+  document.querySelectorAll(".nav button").forEach(b=>b.setAttribute("aria-current",b.dataset.go===v));
+  $("#tbView").textContent=VIEWS[v];
+  ({start:viewStart,lernen:viewLernen,pruefung:viewPruefung,fehler:viewFehler,karten:viewKarten})[v]();
+  window.scrollTo(0,0);
+}
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{if(location.hash.slice(1)===b.dataset.go)go(b.dataset.go);else location.hash=b.dataset.go});
+window.addEventListener("hashchange",()=>go(location.hash.slice(1)));
+
+/* ---------- Übersicht ---------- */
+function catStats(c){const ids=Q.map((q,i)=>q[0]===c?i:-1).filter(i=>i>=0);
+  return{ids,n:ids.length,k:ids.filter(known).length,seen:ids.filter(i=>st(i).s>0).length}}
+function catGrid(onclick){
+  return `<div class="cats">${Object.keys(CATS).map(c=>{const s=catStats(c);
+    return `<button class="cat" data-cat="${c}"><span class="tag">${CATS[c].b}</span><span class="t">${CATS[c].n}</span>
+    <div class="bar"><i class="ok" style="width:${s.n?s.k/s.n*100:0}%"></i></div>
+    <span class="m"><span class="num">${s.k}/${s.n} sicher</span><span class="num">${s.seen} gesehen</span></span></button>`}).join("")}</div>`;
+}
+function viewStart(){
+  const wrong=Q.filter((_,i)=>st(i).w>0&&!known(i)).length;
+  $("#view").innerHTML=`
+  <div class="panel">
+    <h2>So ist die Prüfung aufgebaut</h2>
+    <div class="tblwrap"><table>
+      <tr><th>Teil</th><th>Prüfungsbereich</th><th>Form</th><th class="r">Gewicht</th></tr>
+      <tr><td>1</td><td>Arbeitsauftrag</td><td>Werkstück herstellen und prüfen, 7 h inkl. max. 15 min Fachgespräch</td><td class="r num">30 %</td></tr>
+      <tr><td>2</td><td>Kundenauftrag</td><td>Konstruktion (50 %) + Steuerungstechnik (20 %) + Fachgespräch (30 %), 16 h</td><td class="r num">35 %</td></tr>
+      <tr><td>2</td><td>Konstruktionstechnik</td><td>schriftlich, fallbezogen, 2 h</td><td class="r num">12,5 %</td></tr>
+      <tr><td>2</td><td>Funktionsanalyse</td><td>schriftlich, fallbezogen, 2 h</td><td class="r num">12,5 %</td></tr>
+      <tr><td>2</td><td>Wirtschafts- und Sozialkunde</td><td>schriftlich, 1 h</td><td class="r num">10 %</td></tr>
+    </table></div>
+    <details><summary>Wann ist man durch? (§ 9)</summary>
+      <p class="small">Bestanden, wenn: Gesamtergebnis mindestens ausreichend, Teil 2 mindestens ausreichend, Kundenauftrag mindestens ausreichend, mindestens zwei der drei schriftlichen Bereiche mindestens ausreichend und kein Bereich in Teil 2 ungenügend.</p>
+    </details>
+  </div>
+  <div class="panel">
+    <div class="row" style="justify-content:space-between"><h2>Themengebiete</h2><span class="small muted">„sicher“ = 2× hintereinander richtig</span></div>
+    ${catGrid()}
+    <div class="row">
+      <button class="btn" id="goAll">Alle Themen gemischt lernen</button>
+      <button class="btn sec" id="goErr" ${wrong?"":"disabled"}>${wrong} Fehler wiederholen</button>
+    </div>
+    <p class="note">Für diesen Beruf gibt es keinen öffentlichen, offiziellen Fragenkatalog. Die Fragen hier sind nach den Prüfungsanforderungen der Ausbildungsverordnung und den Lernfeldern zusammengestellt. In der echten Prüfung kommen auch offene Aufgaben mit Tabellenbuch dazu. Rechne die Mathe-Aufgaben deshalb erst auf Papier, bevor du antwortest. Der Fortschritt wird nur in diesem Browser gespeichert.</p>
+  </div>`;
+  document.querySelectorAll(".cat").forEach(b=>b.onclick=()=>startLearn([b.dataset.cat]));
+  $("#goAll").onclick=()=>startLearn(Object.keys(CATS));
+  $("#goErr").onclick=()=>{location.hash="fehler"};
+}
+
+/* ---------- Lernen ---------- */
+function viewLernen(){
+  $("#view").innerHTML=`<div class="panel"><h2>Thema wählen</h2>
+  <p class="muted small">Unbekannte und falsch beantwortete Fragen kommen zuerst. Nach jeder Antwort siehst du die Erklärung.</p>
+  ${catGrid()}<div class="row"><button class="btn" id="goAll">Alle Themen gemischt</button></div></div>`;
+  document.querySelectorAll(".cat").forEach(b=>b.onclick=()=>startLearn([b.dataset.cat]));
+  $("#goAll").onclick=()=>startLearn(Object.keys(CATS));
+}
+function orderForLearn(ids){
+  const pri=i=>{const o=st(i);if(o.s===0)return 1;if(o.streak===0)return 0;if(o.streak===1)return 2;return 3};
+  return shuffle(ids).sort((a,b)=>pri(a)-pri(b));
+}
+function startLearn(cats,idsOverride,title){
+  const ids=idsOverride||Q.map((q,i)=>cats.includes(q[0])?i:-1).filter(i=>i>=0);
+  const list=orderForLearn(ids);
+  const name=title||(cats.length===1?CATS[cats[0]].n:"Alle Themen");
+  let pos=0,right=0,done=0;
+  const show=()=>{
+    if(pos>=list.length){
+      $("#view").innerHTML=`<div class="panel"><h2>Runde fertig</h2><p>${right} von ${done} richtig.</p>
+      <div class="row"><button class="btn" id="again">Noch eine Runde</button><button class="btn sec" id="home">Zur Übersicht</button></div></div>`;
+      $("#again").onclick=()=>startLearn(cats,idsOverride,title);$("#home").onclick=()=>{location.hash="start";go("start")};return;
+    }
+    const i=list[pos];renderQ(i,{head:`${esc(name)} · <span class="num">${pos+1}/${list.length}</span>`,
+      foot:`<span class="num">${right}/${done} richtig</span>`,
+      onAnswer:ok=>{record(i,ok);done++;if(ok)right++},
+      onNext:()=>{pos++;show()},immediate:true});
+  };
+  show();
+}
+
+/* Frage rendern */
+function renderQ(i,o){
+  const q=Q[i];const order=shuffle([0,1,2,3]);const K="ABCD";
+  $("#view").innerHTML=`<div class="panel">
+    <div class="qhead"><span>${o.head}</span><span>${o.foot||""}</span></div>
+    <span class="tag">${CATS[q[0]].n}</span>
+    <p class="qtext">${esc(q[1])}</p>
+    <div class="opts">${order.map((a,k)=>`<button class="opt" data-a="${a}"><span class="k">${K[k]}</span><span>${esc(q[2][a])}</span></button>`).join("")}</div>
+    <div id="after"></div></div>`;
+  const opts=[...document.querySelectorAll(".opt")];
+  let answered=false;
+  const answer=a=>{
+    if(answered)return;answered=true;const ok=a===0;o.onAnswer(ok);
+    if(o.immediate){
+      opts.forEach(b=>{b.disabled=true;const v=+b.dataset.a;if(v===0)b.classList.add("right");else if(v===a)b.classList.add("wrong")});
+      $("#after").innerHTML=`<div class="expl"><b class="verdict ${ok?"ok":"bad"}">${ok?"Richtig.":"Leider falsch."}</b> ${esc(q[3])}</div>
+      <div class="row" style="margin-top:12px"><button class="btn" id="next">Weiter</button><span class="small muted">Taste Enter</span></div>`;
+      $("#next").onclick=o.onNext;$("#next").focus();
+    }else{
+      opts.forEach(b=>{b.disabled=true;if(+b.dataset.a===a)b.classList.add("sel")});
+      setTimeout(o.onNext,180);
+    }
+  };
+  opts.forEach(b=>b.onclick=()=>answer(+b.dataset.a));
+  document.onkeydown=e=>{
+    if(!answered){const k="abcd1234".indexOf(e.key.toLowerCase());if(k>=0){answer(+opts[k%4].dataset.a)}}
+    else if(e.key==="Enter"&&$("#next")){e.preventDefault();$("#next").click()}
+  };
+}
+
+/* ---------- Prüfung ---------- */
+function viewPruefung(){
+  document.onkeydown=null;
+  $("#view").innerHTML=`<div class="panel"><h2>Prüfungssimulation</h2>
+  <p class="muted">Zufällige Fragen aus dem Prüfungsbereich, mit Zeitlimit. Erst am Ende siehst du die Auswertung mit Punkten und Note nach dem 100-Punkte-Schlüssel des Handwerks.</p>
+  <div class="tblwrap"><table><tr><th>Bereich</th><th class="r">Fragen</th><th class="r">Zeit</th><th></th></tr>
+  ${Object.entries(EXAMS).map(([k,e])=>`<tr><td>${e.n}</td><td class="r num">${e.count}</td><td class="r num">${e.min} min</td><td class="r"><button class="btn" data-ex="${k}" style="padding:6px 14px;font-size:17px">Starten</button></td></tr>`).join("")}
+  </table></div>
+  <p class="note">Die echte schriftliche Prüfung dauert 2 h (KT, FA) bzw. 1 h (WiSo) und enthält auch offene Rechen- und Beschreibungsaufgaben. Die Simulation prüft dein Wissen schneller, ersetzt aber das Üben mit alten Prüfungssätzen und dem Tabellenbuch nicht.</p></div>`;
+  document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=()=>startExam(b.dataset.ex));
+}
+function startExam(k){
+  const e=EXAMS[k];
+  const pool=Q.map((q,i)=>e.cats.includes(q[0])?i:-1).filter(i=>i>=0);
+  // gleichmäßig über Kategorien verteilen
+  const byCat={};shuffle(pool).forEach(i=>(byCat[Q[i][0]]=byCat[Q[i][0]]||[]).push(i));
+  const sel=[];const cats=Object.keys(byCat);let c=0;
+  while(sel.length<e.count&&cats.some(x=>byCat[x].length)){const x=cats[c++%cats.length];if(byCat[x].length)sel.push(byCat[x].pop())}
+  const list=shuffle(sel);const ans={};let pos=0;
+  const end=Date.now()+e.min*60000;
+  const tick=()=>{const t=Math.max(0,end-Date.now());const el=$("#tmr");
+    if(el){const m=Math.floor(t/60000),s=Math.floor(t/1000)%60;el.textContent=`${m}:${String(s).padStart(2,"0")}`;el.classList.toggle("low",t<5*60000)}
+    if(t<=0)finish()};
+  const show=()=>{
+    if(pos>=list.length)return finish();
+    const i=list[pos];
+    renderQ(i,{head:`${e.n} · Frage <span class="num">${pos+1}/${list.length}</span>`,
+      foot:`<span class="timer" id="tmr"></span>`,
+      onAnswer:ok=>{ans[i]=ok},onNext:()=>{pos++;show()},immediate:false});
+    const after=$("#after");after.innerHTML=`<div class="row" style="margin-top:6px"><button class="btn sec" id="skip">Überspringen</button><button class="btn sec" id="stop">Abgeben</button></div>`;
+    $("#skip").onclick=()=>{list.push(list.splice(pos,1)[0]);if(Object.keys(ans).length>=list.length)finish();else show()};
+    $("#stop").onclick=finish;
+    tick();
+  };
+  let finished=false;
+  const finish=()=>{
+    if(finished)return;finished=true;clearInterval(timerId);timerId=null;document.onkeydown=null;
+    list.forEach(i=>record(i,!!ans[i]));
+    const right=list.filter(i=>ans[i]).length;const p=Math.round(right/list.length*100);const [g,n]=grade(p);
+    const wrong=list.filter(i=>!ans[i]);
+    $("#view").innerHTML=`<div class="panel"><h2>Auswertung ${e.n}</h2>
+      <div class="grade"><span class="big num">${p}</span><span>von 100 Punkten</span><span class="pill ${n<=4?"ok":"bad"}">Note ${n} · ${g}</span></div>
+      <p class="muted">${right} von ${list.length} richtig. Ausreichend ab 50 Punkten.</p>
+      <div class="row"><button class="btn" id="re">Neue Simulation</button>${wrong.length?`<button class="btn sec" id="learnW">Diese ${wrong.length} Fehler lernen</button>`:""}</div>
+      ${wrong.length?`<h3 style="font-size:22px;margin-top:6px">Falsch oder offen</h3>`+wrong.map(i=>`<div class="expl"><b>${esc(Q[i][1])}</b><br>Richtig: ${esc(Q[i][2][0])}<br><span class="small">${esc(Q[i][3])}</span></div>`).join(""):""}
+    </div>`;
+    $("#re").onclick=()=>viewPruefung();
+    if(wrong.length)$("#learnW").onclick=()=>startLearn([],wrong,"Fehler aus der Simulation");
+  };
+  timerId=setInterval(tick,1000);show();
+}
+
+/* ---------- Fehler ---------- */
+function viewFehler(){
+  document.onkeydown=null;
+  const ids=Q.map((_,i)=>i).filter(i=>st(i).w>0&&!known(i));
+  if(!ids.length){$("#view").innerHTML=`<div class="panel"><h2>Keine offenen Fehler</h2><p class="muted">Fragen, die du falsch beantwortest, landen hier, bis du sie zweimal hintereinander richtig hast.</p><div class="row"><button class="btn" id="l">Zum Lernen</button></div></div>`;$("#l").onclick=()=>{location.hash="lernen"};return}
+  const by={};ids.forEach(i=>by[Q[i][0]]=(by[Q[i][0]]||0)+1);
+  $("#view").innerHTML=`<div class="panel"><h2>${ids.length} offene Fehler</h2>
+    <div class="tblwrap"><table><tr><th>Thema</th><th class="r">Fragen</th></tr>${Object.entries(by).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`<tr><td>${CATS[c].n}</td><td class="r num">${n}</td></tr>`).join("")}</table></div>
+    <div class="row"><button class="btn" id="go">Fehler jetzt wiederholen</button></div></div>`;
+  $("#go").onclick=()=>startLearn([],ids,"Fehlertraining");
+}
+
+/* ---------- Fachgespräch ---------- */
+function viewKarten(){
+  document.onkeydown=null;
+  const groups=["Alle",...new Set(C.map(c=>c[0]))];let g="Alle",list=[],pos=0;
+  const build=()=>{list=C.map((c,i)=>i).filter(i=>g==="Alle"||C[i][0]===g);list=shuffle(list).sort((a,b)=>(S.c[a]?1:0)-(S.c[b]?1:0));pos=0;show()};
+  const show=()=>{
+    const knownN=list.filter(i=>S.c[i]).length;
+    if(pos>=list.length){$("#cardArea").innerHTML=`<div class="card"><h3 style="font-size:24px">Stapel durch</h3><p>${knownN} von ${list.length} Karten kannst du sicher erklären.</p><div class="row"><button class="btn" id="rs">Neu mischen</button></div></div>`;$("#rs").onclick=build;return}
+    const i=list[pos],c=C[i];
+    $("#cardArea").innerHTML=`<div class="card"><div class="qhead"><span>${esc(c[0])} · <span class="num">${pos+1}/${list.length}</span></span><span class="num">${knownN} sicher</span></div>
+      <p class="qtext">${esc(c[1])}</p>
+      <p class="muted small">Antworte erst laut, als säße der Prüfer vor dir. Dann aufdecken.</p>
+      <div id="ans"><button class="btn" id="rev">Antwort zeigen</button></div></div>`;
+    $("#rev").onclick=()=>{$("#ans").innerHTML=`<div class="ans">${esc(c[2])}</div>
+      <div class="row" style="margin-top:12px"><button class="btn" id="ok">Konnte ich</button><button class="btn sec" id="no">Nochmal üben</button></div>`;
+      $("#ok").onclick=()=>{S.c[i]=1;save();pos++;show()};$("#no").onclick=()=>{delete S.c[i];save();pos++;show()}};
+  };
+  $("#view").innerHTML=`<div class="panel"><h2>Fachgespräch üben</h2>
+    <p class="muted small">Im Kundenauftrag zählt das Fachgespräch 30 %. Diese Karten trainieren typische Prüferfragen: begründen, erklären, Fehler eingrenzen, Kunden beraten.</p>
+    <div class="row" id="grp">${groups.map(x=>`<button class="btn sec" data-g="${esc(x)}" style="padding:6px 12px;font-size:17px">${esc(x)}</button>`).join("")}</div>
+    <div id="cardArea"></div></div>`;
+  document.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{g=b.dataset.g;mark();build()});
+  const mark=()=>document.querySelectorAll("[data-g]").forEach(b=>{const on=b.dataset.g===g;b.style.background=on?"var(--steel)":"";b.style.color=on?"var(--sheet)":""});
+  mark();build();
+}
+
+/* ---------- Start ---------- */
+load();
+Promise.all([fetch("questions.json").then(r=>r.json()),fetch("cards.json").then(r=>r.json())])
+.then(([q,c])=>{Q=q;C=c;header();go(location.hash.slice(1))})
+.catch(()=>{$("#view").innerHTML=`<div class="panel"><h2>Fragen konnten nicht geladen werden</h2><p>Bitte die Seite neu laden.</p></div>`});
+</script>
+
+<script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js"));</script>
+</body>
+</html>
