@@ -13,132 +13,139 @@
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Gesellenprüfung Metallbauer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
 </head>
 <body>
 <style>
-/* Layout: Schriftfeld einer technischen Zeichnung als Kopf, darunter eine Arbeitsfläche im Stahlblech-Ton; eine Spalte, max. 760px */
+/* Layout: App-Aufbau fürs Handy – stahlblaues Kopfband, eine Spalte mit Karten, feste Tab-Leiste unten (kein Hochscrollen zur Navigation) */
 :root{
-  --bg:#eef1f3; --sheet:#ffffff; --ink:#1b232b; --muted:#5b6873; --line:#c9d1d8;
-  --steel:#1f4e79; --steel-soft:#dde7f1; --zinc:#8a99a6;
-  --ok:#1d7a46; --ok-soft:#dff1e6; --bad:#b3261e; --bad-soft:#f8e1df; --warn:#a8650a;
+  --bg:#eef2f6; --surface:#ffffff; --sunk:#f5f7fa; --ink:#16202a; --muted:#61707d; --line:#dbe2e9;
+  --steel:#1f4e79; --steel-2:#2b67a0; --steel-soft:#e3edf7; --on-steel:#ffffff; --spark:#f2a33a;
+  --ok:#1b7d48; --ok-soft:#e1f3e8; --bad:#b4261d; --bad-soft:#fbe4e2;
+  --shadow:0 1px 2px rgba(22,32,42,.06),0 4px 14px rgba(22,32,42,.06);
   --f-disp:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
   --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --tabh:64px;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#13181d; --sheet:#1b2228; --ink:#e4e9ee; --muted:#9aa7b2; --line:#33404b;
-  --steel:#7fb2e5; --steel-soft:#22374b; --zinc:#6f7f8c;
-  --ok:#5ccf8b; --ok-soft:#173527; --bad:#f08a80; --bad-soft:#3d1e1c; --warn:#e0a54a; color-scheme:dark}}
+  --bg:#10161c; --surface:#19222b; --sunk:#141b22; --ink:#e6ecf1; --muted:#97a5b1; --line:#2a3642;
+  --steel:#173d61; --steel-2:#7fb2e5; --steel-soft:#1d3148; --on-steel:#ffffff; --spark:#f2a33a;
+  --ok:#5fd193; --ok-soft:#153325; --bad:#f28b81; --bad-soft:#3a1c1a; --shadow:none; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#13181d; --sheet:#1b2228; --ink:#e4e9ee; --muted:#9aa7b2; --line:#33404b;
-  --steel:#7fb2e5; --steel-soft:#22374b; --zinc:#6f7f8c;
-  --ok:#5ccf8b; --ok-soft:#173527; --bad:#f08a80; --bad-soft:#3d1e1c; --warn:#e0a54a; color-scheme:dark}
-*{box-sizing:border-box}
+  --bg:#10161c; --surface:#19222b; --sunk:#141b22; --ink:#e6ecf1; --muted:#97a5b1; --line:#2a3642;
+  --steel:#173d61; --steel-2:#7fb2e5; --steel-soft:#1d3148; --on-steel:#ffffff; --spark:#f2a33a;
+  --ok:#5fd193; --ok-soft:#153325; --bad:#f28b81; --bad-soft:#3a1c1a; --shadow:none; color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
-.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
-h1,h2,h3{font-family:var(--f-disp);font-weight:700;letter-spacing:.01em;text-wrap:balance;margin:0;line-height:1.1}
-button{font:inherit;color:inherit;cursor:pointer}
-button:focus-visible,.opt:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+  padding-bottom:calc(var(--tabh) + env(safe-area-inset-bottom,0px) + 24px)}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible{outline:3px solid var(--spark);outline-offset:2px}
+h1,h2,h3{margin:0;font-family:var(--f-disp);font-weight:700;line-height:1.1;text-wrap:balance}
 .num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.inner{max-width:680px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 
-/* Schriftfeld */
-.tb{background:var(--sheet);border:2px solid var(--ink);display:grid;grid-template-columns:1fr auto;}
-.tb>div{border:1px solid var(--ink);padding:8px 12px;min-width:0}
-.tb .lbl{font-family:var(--f-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block}
-.tb .title{grid-column:1/2;grid-row:1/3}
-.tb .title h1{font-size:clamp(28px,6vw,40px)}
-.tb .title p{margin:2px 0 0;color:var(--muted);font-size:15px}
-.tb .val{font-family:var(--f-disp);font-size:20px;font-weight:600}
-.tb .foot{grid-column:1/3;display:flex;gap:0;padding:0}
-.tb .foot>div{flex:1;padding:6px 12px;border-right:1px solid var(--ink);min-width:0}
-.tb .foot>div:last-child{border-right:0}
-@media (max-width:520px){.tb{grid-template-columns:1fr}.tb .title{grid-row:auto}.tb .foot{grid-column:1}.tb .foot{flex-wrap:wrap}.tb .foot>div{flex:1 1 45%;border-bottom:1px solid var(--ink)}}
+/* Kopf */
+.top{background:var(--steel);color:var(--on-steel);margin-top:calc(-1 * env(safe-area-inset-top,0px));padding-top:calc(env(safe-area-inset-top,0px) + 14px);padding-bottom:14px}
+.top .inner{display:flex;align-items:center;gap:12px}
+.logo{width:40px;height:40px;flex:none;border-radius:10px;background:rgba(255,255,255,.12);display:grid;place-items:center}
+.top h1{font-size:23px;letter-spacing:.01em}
+.top p{margin:0;font-size:13px;opacity:.8}
+.top .grow{flex:1;min-width:0}
+.ring{width:48px;height:48px;flex:none;position:relative}
+.ring svg{display:block}
+.ring span{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-mono);font-size:12px;font-weight:600}
 
-.nav{display:flex;gap:6px;flex-wrap:wrap}
-.nav button{background:var(--sheet);border:1px solid var(--line);padding:8px 14px;font-family:var(--f-disp);font-size:18px;font-weight:600;border-radius:3px}
-.nav button[aria-current="true"]{background:var(--steel);color:var(--sheet);border-color:var(--steel)}
+main{padding-top:16px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;min-width:0}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:8px}
+.sec-h h2{font-size:22px}
+.muted{color:var(--muted)} .small{font-size:14px}
+p{margin:0}
 
-.panel{background:var(--sheet);border:1px solid var(--line);border-radius:4px;padding:20px;display:flex;flex-direction:column;gap:14px}
-.panel h2{font-size:26px}
-.muted{color:var(--muted)}
-.small{font-size:14px}
+/* Fortschritt */
+.big{font-family:var(--f-disp);font-size:52px;font-weight:700;line-height:1}
+.bar{height:8px;background:var(--sunk);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--ok);border-radius:6px}
+.bar.thin{height:5px;border:0;background:var(--line)}
+.bar.steel>i{background:var(--steel-2)}
 
-.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
-.bar>i{display:block;height:100%;background:var(--steel)}
-.bar>i.ok{background:var(--ok)}
-
-.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
-.cat{background:var(--sheet);border:1px solid var(--line);border-radius:4px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:6px}
-.cat:hover{border-color:var(--steel)}
-.cat .t{font-family:var(--f-disp);font-size:19px;font-weight:600;line-height:1.15}
-.cat .m{font-size:13px;color:var(--muted);display:flex;justify-content:space-between}
-.tag{font-family:var(--f-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--steel);border:1px solid var(--steel);padding:1px 5px;border-radius:2px;align-self:flex-start}
-
-table{border-collapse:collapse;width:100%;font-size:15px}
-th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:400}
-td.r,th.r{text-align:right}
-.tblwrap{overflow-x:auto}
-
-.btn{background:var(--steel);color:var(--sheet);border:0;border-radius:3px;padding:11px 18px;font-family:var(--f-disp);font-size:19px;font-weight:600}
-.btn.sec{background:transparent;color:var(--steel);border:1px solid var(--steel)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--steel-2);color:#fff;border-radius:12px;padding:13px 18px;font-weight:600;font-size:17px;min-height:50px;width:100%}
+:root[data-theme="dark"] .btn{color:#0d1a26}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn{color:#0d1a26}}
+.btn.ghost{background:var(--steel-soft);color:var(--steel-2)}
 .btn:disabled{opacity:.45;cursor:default}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btns.one{grid-template-columns:1fr}
+
+/* Listen */
+.list{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+.li{display:flex;align-items:center;gap:12px;padding:13px 14px;width:100%;text-align:left;border-bottom:1px solid var(--line)}
+.li:last-child{border-bottom:0}
+button.li:active{background:var(--sunk)}
+.li .body{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.li .t{font-weight:600;line-height:1.25}
+.li .meta{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted)}
+.chev{color:var(--muted);flex:none}
+.badge{font-family:var(--f-mono);font-size:10px;font-weight:600;letter-spacing:.05em;padding:2px 6px;border-radius:5px;background:var(--steel-soft);color:var(--steel-2);flex:none}
+.pct{font-family:var(--f-disp);font-size:19px;font-weight:700;min-width:44px;text-align:right}
+.weight{font-family:var(--f-disp);font-size:22px;font-weight:700;color:var(--steel-2);min-width:62px;text-align:right}
 
 /* Frage */
-.qhead{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--muted);flex-wrap:wrap}
-.qtext{font-size:20px;font-weight:600;line-height:1.35;margin:0}
-.opts{display:flex;flex-direction:column;gap:8px}
-.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;background:var(--sheet);border:1px solid var(--line);border-radius:4px;padding:12px 14px;line-height:1.4}
-.opt:hover:not(:disabled){border-color:var(--steel)}
-.opt .k{font-family:var(--f-mono);font-weight:600;color:var(--muted);min-width:1.2em}
-.opt.sel{border-color:var(--steel);background:var(--steel-soft)}
-.opt.right{border-color:var(--ok);background:var(--ok-soft)}
-.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.qbar{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)}
+.back{display:flex;align-items:center;gap:2px;color:var(--steel-2);font-weight:600;padding:6px 4px 6px 0}
+.qbar .sp{flex:1}
+.qtext{font-size:20px;font-weight:600;line-height:1.35}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:13px 14px;line-height:1.4;width:100%}
+.opt .k{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--sunk);border:1px solid var(--line);font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--muted)}
+.opt.sel{border-color:var(--steel-2);background:var(--steel-soft)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)} .opt.right .k{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)} .opt.wrong .k{background:var(--bad);border-color:var(--bad);color:#fff}
 .opt:disabled{cursor:default}
-.expl{border-left:3px solid var(--steel);background:var(--steel-soft);padding:10px 14px;border-radius:0 4px 4px 0}
-.expl b{font-family:var(--f-disp);font-size:18px}
-.verdict.ok{color:var(--ok)} .verdict.bad{color:var(--bad)}
+.expl{border-radius:12px;padding:13px 14px;background:var(--steel-soft);line-height:1.45}
+.expl.ok{background:var(--ok-soft)} .expl.bad{background:var(--bad-soft)}
+.expl b{display:block;font-family:var(--f-disp);font-size:20px;margin-bottom:2px}
+.expl.ok b{color:var(--ok)} .expl.bad b{color:var(--bad)}
+.timer{font-family:var(--f-mono);font-weight:600;color:var(--ink)} .timer.low{color:var(--bad)}
 
-/* Karten */
-.card{border:1px solid var(--line);border-radius:4px;padding:18px;background:var(--sheet);display:flex;flex-direction:column;gap:12px;min-height:200px}
-.card .ans{border-top:1px dashed var(--line);padding-top:12px}
-
-.grade{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
-.grade .big{font-family:var(--f-disp);font-size:56px;font-weight:700;line-height:1}
-.pill{display:inline-block;padding:2px 10px;border-radius:20px;font-family:var(--f-disp);font-size:18px;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:8px 14px;border-radius:20px;background:var(--surface);border:1px solid var(--line);font-weight:600;font-size:15px}
+.chip[aria-pressed="true"]{background:var(--steel-2);border-color:var(--steel-2);color:#fff}
+.ans{border-top:1px dashed var(--line);padding-top:12px;line-height:1.5}
+.pill{display:inline-block;padding:3px 12px;border-radius:20px;font-weight:700;font-size:15px}
 .pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.bad{background:var(--bad-soft);color:var(--bad)}
-.timer{font-family:var(--f-mono);font-size:15px}
-.timer.low{color:var(--bad)}
-details summary{cursor:pointer;font-weight:600}
-.note{font-size:14px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
-@media (prefers-reduced-motion:no-preference){.opt,.cat{transition:border-color .12s,background .12s}}
+details summary{cursor:pointer;font-weight:600;color:var(--steel-2)}
+details p{margin-top:8px}
+
+/* Tab-Leiste */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+.tabs .row{max-width:680px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);height:var(--tabh)}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11.5px;font-weight:600;color:var(--muted);position:relative}
+.tab svg{width:24px;height:24px}
+.tab[aria-current="true"]{color:var(--steel-2)}
+.tab .dot{position:absolute;top:8px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--bad);color:#fff;font-size:10.5px;font-family:var(--f-mono);display:grid;place-items:center}
+@media (prefers-reduced-motion:no-preference){.opt,.li,.chip{transition:background .12s,border-color .12s}}
 </style>
 
-<div class="wrap">
-  <header class="tb" aria-label="Schriftfeld">
-    <div class="title"><span class="lbl">Benennung</span><h1>Gesellenprüfung Metallbauer</h1><p>Fachrichtung Konstruktionstechnik · Lern- und Prüfungstrainer</p></div>
-    <div><span class="lbl">Fragen</span><span class="val num" id="tbQ">–</span></div>
-    <div><span class="lbl">Sicher gelernt</span><span class="val num" id="tbK">0 %</span></div>
-    <div class="foot">
-      <div><span class="lbl">Grundlage</span><span class="small">MetallbauAusbV 2008 §§ 6–9</span></div>
-      <div><span class="lbl">Teil 2 schriftlich</span><span class="small">KT 2 h · FA 2 h · WiSo 1 h</span></div>
-      <div><span class="lbl">Blatt</span><span class="small num" id="tbView">Start</span></div>
-    </div>
-  </header>
+<header class="top"><div class="inner">
+  <div class="logo" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 100 100"><rect x="18" y="14" width="64" height="14" fill="#eef1f3"/><rect x="42" y="28" width="16" height="44" fill="#eef1f3"/><rect x="18" y="72" width="64" height="14" fill="#eef1f3"/><path d="M26 52 L43 66 L76 34" fill="none" stroke="#f2a33a" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <div class="grow"><h1>Metallbauer</h1><p>Gesellenprüfung · Konstruktionstechnik</p></div>
+  <div class="ring" title="sicher gelernt"><svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="5"/><circle id="ringArc" cx="24" cy="24" r="20" fill="none" stroke="#f2a33a" stroke-width="5" stroke-linecap="round" stroke-dasharray="0 126" transform="rotate(-90 24 24)"/></svg><span id="ringTxt">0%</span></div>
+</div></header>
 
-  <nav class="nav" aria-label="Bereiche">
-    <button data-go="start">Übersicht</button>
-    <button data-go="lernen">Lernen</button>
-    <button data-go="pruefung">Prüfung</button>
-    <button data-go="fehler">Fehler</button>
-    <button data-go="karten">Fachgespräch</button>
-  </nav>
+<main class="inner"><div id="view" class="stack"><div class="card"><p class="muted">Fragen werden geladen …</p></div></div></main>
 
-  <main id="view"><div class="panel"><p class="muted">Fragen werden geladen …</p></div></main>
-</div>
+<nav class="tabs" aria-label="Bereiche"><div class="row">
+  <button class="tab" data-go="start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg>Start</button>
+  <button class="tab" data-go="lernen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h6a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4z"/><path d="M20 5h-6a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h6z"/></svg>Lernen</button>
+  <button class="tab" data-go="pruefung"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg>Prüfung</button>
+  <button class="tab" data-go="fehler"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Fehler<span class="dot" id="errDot" hidden></span></button>
+  <button class="tab" data-go="karten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 21l1.8-5.5A8 8 0 1 1 21 12z"/></svg>Gespräch</button>
+</div></nav>
 
 <script>
 const CATS={
@@ -146,13 +153,14 @@ const CATS={
   K:{n:"Korrosionsschutz",b:"KT"},B:{n:"Bauelemente & Normen",b:"KT"},M:{n:"Technische Mathematik",b:"KT"},
   Z:{n:"Technisches Zeichnen",b:"KT"},ST:{n:"Statik & Festigkeit",b:"KT"},
   E:{n:"Elektrotechnik",b:"FA"},SG:{n:"Steuerung, Tore, Pneumatik",b:"FA"},MI:{n:"Montage & Instandhaltung",b:"FA"},
-  A:{n:"Arbeitsschutz, Umwelt, QM",b:"KT+FA"},WS:{n:"Wirtschafts- und Sozialkunde",b:"WiSo"}
+  A:{n:"Arbeitsschutz, Umwelt, QM",b:"KT/FA"},WS:{n:"Wirtschafts- und Sozialkunde",b:"WISO"}
 };
 const EXAMS={
   KT:{n:"Konstruktionstechnik",cats:["W","F","S","K","B","M","Z","ST","A"],count:30,min:60},
   FA:{n:"Funktionsanalyse",cats:["E","SG","MI","A","M"],count:30,min:60},
   WS:{n:"Wirtschafts- und Sozialkunde",cats:["WS"],count:20,min:30}
 };
+const CHEV='<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>';
 let Q=[],C=[],S={q:{},c:{}};
 const KEY="mb-kt-gp-v1";
 function load(){try{const r=localStorage.getItem(KEY);if(r)S=Object.assign({q:{},c:{}},JSON.parse(r))}catch(e){}}
@@ -162,151 +170,165 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
 const st=i=>S.q[i]||{s:0,c:0,w:0,streak:0};
 const known=i=>st(i).streak>=2;
+const openErrors=()=>Q.map((_,i)=>i).filter(i=>st(i).w>0&&!known(i));
 function record(i,ok){const o=st(i);o.s++;ok?(o.c++,o.streak++):(o.w++,o.streak=0);S.q[i]=o;save();header()}
 function header(){
-  $("#tbQ").textContent=Q.length;
-  const k=Q.filter((_,i)=>known(i)).length;
-  $("#tbK").textContent=Q.length?Math.round(k/Q.length*100)+" %":"0 %";
+  const k=Q.filter((_,i)=>known(i)).length;const p=Q.length?Math.round(k/Q.length*100):0;
+  $("#ringArc").setAttribute("stroke-dasharray",`${(p/100*125.7).toFixed(1)} 126`);$("#ringTxt").textContent=p+"%";
+  const e=openErrors().length;const d=$("#errDot");d.hidden=!e;d.textContent=e>99?"99+":e;
 }
 function grade(p){
   if(p>=92)return["sehr gut",1];if(p>=81)return["gut",2];if(p>=67)return["befriedigend",3];
   if(p>=50)return["ausreichend",4];if(p>=30)return["mangelhaft",5];return["ungenügend",6];
 }
+const V=h=>{$("#view").innerHTML=h;window.scrollTo(0,0)};
 
 /* ---------- Routing ---------- */
-const VIEWS={start:"Übersicht",lernen:"Lernen",pruefung:"Prüfung",fehler:"Fehler",karten:"Fachgespräch"};
+const VIEWS=["start","lernen","pruefung","fehler","karten"];
 let timerId=null;
 function go(v){
-  if(!VIEWS[v])v="start";
+  if(!VIEWS.includes(v))v="start";
   if(timerId){clearInterval(timerId);timerId=null}
-  document.querySelectorAll(".nav button").forEach(b=>b.setAttribute("aria-current",b.dataset.go===v));
-  $("#tbView").textContent=VIEWS[v];
+  document.onkeydown=null;
+  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-current",b.dataset.go===v));
   ({start:viewStart,lernen:viewLernen,pruefung:viewPruefung,fehler:viewFehler,karten:viewKarten})[v]();
-  window.scrollTo(0,0);
 }
-document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{if(location.hash.slice(1)===b.dataset.go)go(b.dataset.go);else location.hash=b.dataset.go});
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{if(location.hash.slice(1)===b.dataset.go)go(b.dataset.go);else location.hash=b.dataset.go});
 window.addEventListener("hashchange",()=>go(location.hash.slice(1)));
 
-/* ---------- Übersicht ---------- */
+/* ---------- Bausteine ---------- */
 function catStats(c){const ids=Q.map((q,i)=>q[0]===c?i:-1).filter(i=>i>=0);
   return{ids,n:ids.length,k:ids.filter(known).length,seen:ids.filter(i=>st(i).s>0).length}}
-function catGrid(onclick){
-  return `<div class="cats">${Object.keys(CATS).map(c=>{const s=catStats(c);
-    return `<button class="cat" data-cat="${c}"><span class="tag">${CATS[c].b}</span><span class="t">${CATS[c].n}</span>
-    <div class="bar"><i class="ok" style="width:${s.n?s.k/s.n*100:0}%"></i></div>
-    <span class="m"><span class="num">${s.k}/${s.n} sicher</span><span class="num">${s.seen} gesehen</span></span></button>`}).join("")}</div>`;
+function catList(){
+  return `<div class="list">${Object.keys(CATS).map(c=>{const s=catStats(c);const p=s.n?Math.round(s.k/s.n*100):0;
+    return `<button class="li" data-cat="${c}"><div class="body"><span class="t">${CATS[c].n}</span>
+      <div class="bar thin"><i style="width:${p}%"></i></div>
+      <span class="meta"><span>${s.k} von ${s.n} sicher</span><span class="badge">${CATS[c].b}</span></span></div>
+      <span class="pct num">${p}%</span>${CHEV}</button>`}).join("")}</div>`;
 }
+function bindCats(){document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>startLearn([b.dataset.cat]))}
+
+/* ---------- Start ---------- */
 function viewStart(){
-  const wrong=Q.filter((_,i)=>st(i).w>0&&!known(i)).length;
-  $("#view").innerHTML=`
-  <div class="panel">
-    <h2>So ist die Prüfung aufgebaut</h2>
-    <div class="tblwrap"><table>
-      <tr><th>Teil</th><th>Prüfungsbereich</th><th>Form</th><th class="r">Gewicht</th></tr>
-      <tr><td>1</td><td>Arbeitsauftrag</td><td>Werkstück herstellen und prüfen, 7 h inkl. max. 15 min Fachgespräch</td><td class="r num">30 %</td></tr>
-      <tr><td>2</td><td>Kundenauftrag</td><td>Konstruktion (50 %) + Steuerungstechnik (20 %) + Fachgespräch (30 %), 16 h</td><td class="r num">35 %</td></tr>
-      <tr><td>2</td><td>Konstruktionstechnik</td><td>schriftlich, fallbezogen, 2 h</td><td class="r num">12,5 %</td></tr>
-      <tr><td>2</td><td>Funktionsanalyse</td><td>schriftlich, fallbezogen, 2 h</td><td class="r num">12,5 %</td></tr>
-      <tr><td>2</td><td>Wirtschafts- und Sozialkunde</td><td>schriftlich, 1 h</td><td class="r num">10 %</td></tr>
-    </table></div>
-    <details><summary>Wann ist man durch? (§ 9)</summary>
-      <p class="small">Bestanden, wenn: Gesamtergebnis mindestens ausreichend, Teil 2 mindestens ausreichend, Kundenauftrag mindestens ausreichend, mindestens zwei der drei schriftlichen Bereiche mindestens ausreichend und kein Bereich in Teil 2 ungenügend.</p>
-    </details>
-  </div>
-  <div class="panel">
-    <div class="row" style="justify-content:space-between"><h2>Themengebiete</h2><span class="small muted">„sicher“ = 2× hintereinander richtig</span></div>
-    ${catGrid()}
-    <div class="row">
-      <button class="btn" id="goAll">Alle Themen gemischt lernen</button>
-      <button class="btn sec" id="goErr" ${wrong?"":"disabled"}>${wrong} Fehler wiederholen</button>
+  const k=Q.filter((_,i)=>known(i)).length,seen=Q.filter((_,i)=>st(i).s>0).length,p=Q.length?Math.round(k/Q.length*100):0;
+  const err=openErrors().length;
+  V(`
+  <section class="card">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px">
+      <div><p class="small muted">Sicher gelernt</p><div class="big num">${p}<span style="font-size:28px">%</span></div></div>
+      <p class="small muted" style="text-align:right">${k} von ${Q.length} Fragen<br>${seen} schon gesehen</p>
     </div>
-    <p class="note">Für diesen Beruf gibt es keinen öffentlichen, offiziellen Fragenkatalog. Die Fragen hier sind nach den Prüfungsanforderungen der Ausbildungsverordnung und den Lernfeldern zusammengestellt. In der echten Prüfung kommen auch offene Aufgaben mit Tabellenbuch dazu. Rechne die Mathe-Aufgaben deshalb erst auf Papier, bevor du antwortest. Der Fortschritt wird nur in diesem Browser gespeichert.</p>
-  </div>`;
-  document.querySelectorAll(".cat").forEach(b=>b.onclick=()=>startLearn([b.dataset.cat]));
+    <div class="bar"><i style="width:${p}%"></i></div>
+    <div class="btns"><button class="btn" id="goAll">Weiterlernen</button><button class="btn ghost" id="goErr" ${err?"":"disabled"}>${err} Fehler</button></div>
+  </section>
+
+  <div class="sec-h"><h2>Themen</h2><span class="small muted">sicher = 2× in Folge richtig</span></div>
+  ${catList()}
+
+  <div class="sec-h"><h2>So läuft die Prüfung</h2></div>
+  <div class="list">
+    ${[["Teil 1 · Arbeitsauftrag","Werkstück bauen und prüfen, 7 h, Fachgespräch bis 15 min","30 %"],
+       ["Teil 2 · Kundenauftrag","Konstruktion + Steuerungstechnik + Fachgespräch, 16 h","35 %"],
+       ["Konstruktionstechnik","schriftlich, 2 h","12,5 %"],
+       ["Funktionsanalyse","schriftlich, 2 h","12,5 %"],
+       ["Wirtschafts- und Sozialkunde","schriftlich, 1 h","10 %"]]
+      .map(r=>`<div class="li"><div class="body"><span class="t">${r[0]}</span><span class="small muted">${r[1]}</span></div><span class="weight num">${r[2]}</span></div>`).join("")}
+  </div>
+  <section class="card">
+    <details><summary>Wann ist man durch?</summary>
+      <p class="small">Gesamtergebnis mindestens ausreichend, Teil 2 mindestens ausreichend, Kundenauftrag mindestens ausreichend, mindestens zwei der drei schriftlichen Bereiche mindestens ausreichend und kein Bereich in Teil 2 ungenügend (§ 9 MetallbauAusbV).</p></details>
+    <details><summary>Woher kommen die Fragen?</summary>
+      <p class="small">Für diesen Beruf gibt es keinen öffentlichen Fragenkatalog. Die Fragen sind nach den Prüfungsanforderungen der Ausbildungsverordnung und den Lernfeldern zusammengestellt. In der echten Prüfung gibt es zusätzlich offene Aufgaben mit Tabellenbuch, also Mathe-Fragen erst auf Papier rechnen. Der Lernstand bleibt auf diesem Gerät gespeichert.</p></details>
+  </section>`);
+  bindCats();
   $("#goAll").onclick=()=>startLearn(Object.keys(CATS));
   $("#goErr").onclick=()=>{location.hash="fehler"};
 }
 
 /* ---------- Lernen ---------- */
 function viewLernen(){
-  $("#view").innerHTML=`<div class="panel"><h2>Thema wählen</h2>
-  <p class="muted small">Unbekannte und falsch beantwortete Fragen kommen zuerst. Nach jeder Antwort siehst du die Erklärung.</p>
-  ${catGrid()}<div class="row"><button class="btn" id="goAll">Alle Themen gemischt</button></div></div>`;
-  document.querySelectorAll(".cat").forEach(b=>b.onclick=()=>startLearn([b.dataset.cat]));
-  $("#goAll").onclick=()=>startLearn(Object.keys(CATS));
+  V(`<div class="sec-h" style="margin-top:0"><h2>Was willst du lernen?</h2></div>
+  <button class="btn" id="goAll">Alle Themen gemischt</button>
+  ${catList()}
+  <p class="small muted">Falsch beantwortete und neue Fragen kommen zuerst. Nach jeder Antwort siehst du die Erklärung.</p>`);
+  bindCats();$("#goAll").onclick=()=>startLearn(Object.keys(CATS));
 }
 function orderForLearn(ids){
   const pri=i=>{const o=st(i);if(o.s===0)return 1;if(o.streak===0)return 0;if(o.streak===1)return 2;return 3};
   return shuffle(ids).sort((a,b)=>pri(a)-pri(b));
 }
-function startLearn(cats,idsOverride,title){
+function startLearn(cats,idsOverride,title,backTo){
   const ids=idsOverride||Q.map((q,i)=>cats.includes(q[0])?i:-1).filter(i=>i>=0);
   const list=orderForLearn(ids);
   const name=title||(cats.length===1?CATS[cats[0]].n:"Alle Themen");
+  const back=backTo||"lernen";
   let pos=0,right=0,done=0;
   const show=()=>{
     if(pos>=list.length){
-      $("#view").innerHTML=`<div class="panel"><h2>Runde fertig</h2><p>${right} von ${done} richtig.</p>
-      <div class="row"><button class="btn" id="again">Noch eine Runde</button><button class="btn sec" id="home">Zur Übersicht</button></div></div>`;
-      $("#again").onclick=()=>startLearn(cats,idsOverride,title);$("#home").onclick=()=>{location.hash="start";go("start")};return;
+      V(`<section class="card"><h2 style="font-size:28px">Runde geschafft</h2><p>${right} von ${done} richtig.</p>
+      <div class="btns"><button class="btn" id="again">Noch eine Runde</button><button class="btn ghost" id="home">Zur Übersicht</button></div></section>`);
+      $("#again").onclick=()=>startLearn(cats,idsOverride,title,backTo);$("#home").onclick=()=>{location.hash="start";go("start")};return;
     }
-    const i=list[pos];renderQ(i,{head:`${esc(name)} · <span class="num">${pos+1}/${list.length}</span>`,
-      foot:`<span class="num">${right}/${done} richtig</span>`,
-      onAnswer:ok=>{record(i,ok);done++;if(ok)right++},
-      onNext:()=>{pos++;show()},immediate:true});
+    const i=list[pos];
+    renderQ(i,{back,label:name,count:`${pos+1}/${list.length}`,progress:pos/list.length,extra:done?`<span class="num">${right}/${done} ✓</span>`:"",
+      onAnswer:ok=>{record(i,ok);done++;if(ok)right++},onNext:()=>{pos++;show()},immediate:true});
   };
   show();
 }
 
-/* Frage rendern */
+/* Frage */
 function renderQ(i,o){
   const q=Q[i];const order=shuffle([0,1,2,3]);const K="ABCD";
-  $("#view").innerHTML=`<div class="panel">
-    <div class="qhead"><span>${o.head}</span><span>${o.foot||""}</span></div>
-    <span class="tag">${CATS[q[0]].n}</span>
-    <p class="qtext">${esc(q[1])}</p>
+  V(`<div class="qbar"><button class="back" id="backBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m15 6-6 6 6 6"/></svg>Zurück</button>
+      <span class="sp"></span>${o.extra||""}<span class="num">${o.count}</span></div>
+    <div class="bar thin steel"><i style="width:${(o.progress*100).toFixed(1)}%"></i></div>
+    <section class="card">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="badge">${CATS[q[0]].b}</span><span class="small muted">${CATS[q[0]].n}</span></div>
+      <p class="qtext">${esc(q[1])}</p>
+    </section>
     <div class="opts">${order.map((a,k)=>`<button class="opt" data-a="${a}"><span class="k">${K[k]}</span><span>${esc(q[2][a])}</span></button>`).join("")}</div>
-    <div id="after"></div></div>`;
+    <div id="after" class="stack"></div>`);
+  $("#backBtn").onclick=()=>{if(o.onBack)o.onBack();else{location.hash=o.back;go(o.back)}};
   const opts=[...document.querySelectorAll(".opt")];
   let answered=false;
   const answer=a=>{
     if(answered)return;answered=true;const ok=a===0;o.onAnswer(ok);
     if(o.immediate){
       opts.forEach(b=>{b.disabled=true;const v=+b.dataset.a;if(v===0)b.classList.add("right");else if(v===a)b.classList.add("wrong")});
-      $("#after").innerHTML=`<div class="expl"><b class="verdict ${ok?"ok":"bad"}">${ok?"Richtig.":"Leider falsch."}</b> ${esc(q[3])}</div>
-      <div class="row" style="margin-top:12px"><button class="btn" id="next">Weiter</button><span class="small muted">Taste Enter</span></div>`;
-      $("#next").onclick=o.onNext;$("#next").focus();
+      $("#after").innerHTML=`<div class="expl ${ok?"ok":"bad"}"><b>${ok?"Richtig":"Leider falsch"}</b>${esc(q[3])}</div>
+        <button class="btn" id="next">Weiter</button>`;
+      $("#next").onclick=o.onNext;
+      $("#next").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"end"});
     }else{
       opts.forEach(b=>{b.disabled=true;if(+b.dataset.a===a)b.classList.add("sel")});
-      setTimeout(o.onNext,180);
+      setTimeout(o.onNext,200);
     }
   };
   opts.forEach(b=>b.onclick=()=>answer(+b.dataset.a));
   document.onkeydown=e=>{
-    if(!answered){const k="abcd1234".indexOf(e.key.toLowerCase());if(k>=0){answer(+opts[k%4].dataset.a)}}
+    if(!answered){const k="abcd1234".indexOf(e.key.toLowerCase());if(k>=0)answer(+opts[k%4].dataset.a)}
     else if(e.key==="Enter"&&$("#next")){e.preventDefault();$("#next").click()}
   };
+  if(o.after)o.after();
 }
 
 /* ---------- Prüfung ---------- */
 function viewPruefung(){
-  document.onkeydown=null;
-  $("#view").innerHTML=`<div class="panel"><h2>Prüfungssimulation</h2>
-  <p class="muted">Zufällige Fragen aus dem Prüfungsbereich, mit Zeitlimit. Erst am Ende siehst du die Auswertung mit Punkten und Note nach dem 100-Punkte-Schlüssel des Handwerks.</p>
-  <div class="tblwrap"><table><tr><th>Bereich</th><th class="r">Fragen</th><th class="r">Zeit</th><th></th></tr>
-  ${Object.entries(EXAMS).map(([k,e])=>`<tr><td>${e.n}</td><td class="r num">${e.count}</td><td class="r num">${e.min} min</td><td class="r"><button class="btn" data-ex="${k}" style="padding:6px 14px;font-size:17px">Starten</button></td></tr>`).join("")}
-  </table></div>
-  <p class="note">Die echte schriftliche Prüfung dauert 2 h (KT, FA) bzw. 1 h (WiSo) und enthält auch offene Rechen- und Beschreibungsaufgaben. Die Simulation prüft dein Wissen schneller, ersetzt aber das Üben mit alten Prüfungssätzen und dem Tabellenbuch nicht.</p></div>`;
+  V(`<div class="sec-h" style="margin-top:0"><h2>Prüfungssimulation</h2></div>
+  <p class="small muted">Zufällige Fragen mit Zeitlimit. Die Auswertung kommt am Ende, mit Punkten und Note nach dem 100-Punkte-Schlüssel.</p>
+  ${Object.entries(EXAMS).map(([k,e])=>`<section class="card">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><h3 style="font-size:22px">${e.n}</h3><span class="small muted num">${e.count} Fragen · ${e.min} min</span></div>
+    <button class="btn" data-ex="${k}">Starten</button></section>`).join("")}
+  <p class="small muted">Die echte Prüfung dauert 2 h (KT, FA) bzw. 1 h (WiSo) und enthält auch offene Rechen- und Beschreibungsaufgaben.</p>`);
   document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=()=>startExam(b.dataset.ex));
 }
 function startExam(k){
   const e=EXAMS[k];
   const pool=Q.map((q,i)=>e.cats.includes(q[0])?i:-1).filter(i=>i>=0);
-  // gleichmäßig über Kategorien verteilen
   const byCat={};shuffle(pool).forEach(i=>(byCat[Q[i][0]]=byCat[Q[i][0]]||[]).push(i));
   const sel=[];const cats=Object.keys(byCat);let c=0;
   while(sel.length<e.count&&cats.some(x=>byCat[x].length)){const x=cats[c++%cats.length];if(byCat[x].length)sel.push(byCat[x].pop())}
-  const list=shuffle(sel);const ans={};let pos=0;
+  const list=shuffle(sel);const ans={};let pos=0,finished=false;
   const end=Date.now()+e.min*60000;
   const tick=()=>{const t=Math.max(0,end-Date.now());const el=$("#tmr");
     if(el){const m=Math.floor(t/60000),s=Math.floor(t/1000)%60;el.textContent=`${m}:${String(s).padStart(2,"0")}`;el.classList.toggle("low",t<5*60000)}
@@ -314,67 +336,65 @@ function startExam(k){
   const show=()=>{
     if(pos>=list.length)return finish();
     const i=list[pos];
-    renderQ(i,{head:`${e.n} · Frage <span class="num">${pos+1}/${list.length}</span>`,
-      foot:`<span class="timer" id="tmr"></span>`,
-      onAnswer:ok=>{ans[i]=ok},onNext:()=>{pos++;show()},immediate:false});
-    const after=$("#after");after.innerHTML=`<div class="row" style="margin-top:6px"><button class="btn sec" id="skip">Überspringen</button><button class="btn sec" id="stop">Abgeben</button></div>`;
-    $("#skip").onclick=()=>{list.push(list.splice(pos,1)[0]);if(Object.keys(ans).length>=list.length)finish();else show()};
-    $("#stop").onclick=finish;
+    renderQ(i,{label:e.n,count:`${pos+1}/${list.length}`,progress:pos/list.length,extra:`<span class="timer" id="tmr"></span>`,
+      onAnswer:ok=>{ans[i]=ok},onNext:()=>{pos++;show()},immediate:false,onBack:finish,
+      after:()=>{$("#backBtn").lastChild.textContent="Abgeben";
+        $("#after").innerHTML=`<button class="btn ghost" id="skip">Später beantworten</button>`;
+        $("#skip").onclick=()=>{list.push(list.splice(pos,1)[0]);show()}}});
     tick();
   };
-  let finished=false;
   const finish=()=>{
     if(finished)return;finished=true;clearInterval(timerId);timerId=null;document.onkeydown=null;
     list.forEach(i=>record(i,!!ans[i]));
     const right=list.filter(i=>ans[i]).length;const p=Math.round(right/list.length*100);const [g,n]=grade(p);
     const wrong=list.filter(i=>!ans[i]);
-    $("#view").innerHTML=`<div class="panel"><h2>Auswertung ${e.n}</h2>
-      <div class="grade"><span class="big num">${p}</span><span>von 100 Punkten</span><span class="pill ${n<=4?"ok":"bad"}">Note ${n} · ${g}</span></div>
-      <p class="muted">${right} von ${list.length} richtig. Ausreichend ab 50 Punkten.</p>
-      <div class="row"><button class="btn" id="re">Neue Simulation</button>${wrong.length?`<button class="btn sec" id="learnW">Diese ${wrong.length} Fehler lernen</button>`:""}</div>
-      ${wrong.length?`<h3 style="font-size:22px;margin-top:6px">Falsch oder offen</h3>`+wrong.map(i=>`<div class="expl"><b>${esc(Q[i][1])}</b><br>Richtig: ${esc(Q[i][2][0])}<br><span class="small">${esc(Q[i][3])}</span></div>`).join(""):""}
-    </div>`;
+    V(`<section class="card"><p class="small muted">${e.n}</p>
+      <div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap"><span class="big num">${p}</span><span class="muted" style="padding-bottom:6px">von 100 Punkten</span></div>
+      <div><span class="pill ${n<=4?"ok":"bad"}">Note ${n} · ${g}</span></div>
+      <p class="small muted">${right} von ${list.length} richtig. Ausreichend ab 50 Punkten.</p>
+      <div class="btns ${wrong.length?"":"one"}"><button class="btn" id="re">Neue Simulation</button>${wrong.length?`<button class="btn ghost" id="learnW">Fehler lernen</button>`:""}</div></section>
+      ${wrong.length?`<div class="sec-h"><h2>Falsch oder offen</h2><span class="small muted num">${wrong.length}</span></div>`+wrong.map(i=>`<section class="card"><p style="font-weight:600">${esc(Q[i][1])}</p><div class="expl ok"><b>${esc(Q[i][2][0])}</b>${esc(Q[i][3])}</div></section>`).join(""):""}`);
     $("#re").onclick=()=>viewPruefung();
-    if(wrong.length)$("#learnW").onclick=()=>startLearn([],wrong,"Fehler aus der Simulation");
+    if(wrong.length)$("#learnW").onclick=()=>startLearn([],wrong,"Fehler aus der Simulation","pruefung");
   };
   timerId=setInterval(tick,1000);show();
 }
 
 /* ---------- Fehler ---------- */
 function viewFehler(){
-  document.onkeydown=null;
-  const ids=Q.map((_,i)=>i).filter(i=>st(i).w>0&&!known(i));
-  if(!ids.length){$("#view").innerHTML=`<div class="panel"><h2>Keine offenen Fehler</h2><p class="muted">Fragen, die du falsch beantwortest, landen hier, bis du sie zweimal hintereinander richtig hast.</p><div class="row"><button class="btn" id="l">Zum Lernen</button></div></div>`;$("#l").onclick=()=>{location.hash="lernen"};return}
+  const ids=openErrors();
+  if(!ids.length){V(`<section class="card"><h2 style="font-size:26px">Keine offenen Fehler</h2><p class="muted">Falsch beantwortete Fragen landen hier, bis du sie zweimal hintereinander richtig hast.</p><button class="btn" id="l">Lernen</button></section>`);$("#l").onclick=()=>{location.hash="lernen"};return}
   const by={};ids.forEach(i=>by[Q[i][0]]=(by[Q[i][0]]||0)+1);
-  $("#view").innerHTML=`<div class="panel"><h2>${ids.length} offene Fehler</h2>
-    <div class="tblwrap"><table><tr><th>Thema</th><th class="r">Fragen</th></tr>${Object.entries(by).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`<tr><td>${CATS[c].n}</td><td class="r num">${n}</td></tr>`).join("")}</table></div>
-    <div class="row"><button class="btn" id="go">Fehler jetzt wiederholen</button></div></div>`;
-  $("#go").onclick=()=>startLearn([],ids,"Fehlertraining");
+  V(`<section class="card"><p class="small muted">Offene Fehler</p><div class="big num">${ids.length}</div>
+    <button class="btn" id="go">Alle wiederholen</button></section>
+    <div class="sec-h"><h2>Nach Thema</h2></div>
+    <div class="list">${Object.entries(by).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`<button class="li" data-ec="${c}"><div class="body"><span class="t">${CATS[c].n}</span></div><span class="pct num">${n}</span>${CHEV}</button>`).join("")}</div>`);
+  $("#go").onclick=()=>startLearn([],ids,"Fehlertraining","fehler");
+  document.querySelectorAll("[data-ec]").forEach(b=>b.onclick=()=>startLearn([],ids.filter(i=>Q[i][0]===b.dataset.ec),"Fehler: "+CATS[b.dataset.ec].n,"fehler"));
 }
 
 /* ---------- Fachgespräch ---------- */
 function viewKarten(){
-  document.onkeydown=null;
   const groups=["Alle",...new Set(C.map(c=>c[0]))];let g="Alle",list=[],pos=0;
-  const build=()=>{list=C.map((c,i)=>i).filter(i=>g==="Alle"||C[i][0]===g);list=shuffle(list).sort((a,b)=>(S.c[a]?1:0)-(S.c[b]?1:0));pos=0;show()};
+  const build=()=>{list=shuffle(C.map((c,i)=>i).filter(i=>g==="Alle"||C[i][0]===g)).sort((a,b)=>(S.c[a]?1:0)-(S.c[b]?1:0));pos=0;show()};
   const show=()=>{
     const knownN=list.filter(i=>S.c[i]).length;
-    if(pos>=list.length){$("#cardArea").innerHTML=`<div class="card"><h3 style="font-size:24px">Stapel durch</h3><p>${knownN} von ${list.length} Karten kannst du sicher erklären.</p><div class="row"><button class="btn" id="rs">Neu mischen</button></div></div>`;$("#rs").onclick=build;return}
+    if(pos>=list.length){$("#cardArea").innerHTML=`<section class="card"><h3 style="font-size:24px">Stapel durch</h3><p>${knownN} von ${list.length} Karten kannst du sicher erklären.</p><button class="btn" id="rs">Neu mischen</button></section>`;$("#rs").onclick=build;return}
     const i=list[pos],c=C[i];
-    $("#cardArea").innerHTML=`<div class="card"><div class="qhead"><span>${esc(c[0])} · <span class="num">${pos+1}/${list.length}</span></span><span class="num">${knownN} sicher</span></div>
-      <p class="qtext">${esc(c[1])}</p>
-      <p class="muted small">Antworte erst laut, als säße der Prüfer vor dir. Dann aufdecken.</p>
-      <div id="ans"><button class="btn" id="rev">Antwort zeigen</button></div></div>`;
+    $("#cardArea").innerHTML=`<div class="qbar"><span>${esc(c[0])}</span><span class="sp"></span><span class="num">${knownN} sicher · ${pos+1}/${list.length}</span></div>
+      <section class="card"><p class="qtext">${esc(c[1])}</p>
+      <p class="small muted">Erst laut antworten, als säße der Prüfer vor dir. Dann aufdecken.</p>
+      <div id="ans"><button class="btn" id="rev">Antwort zeigen</button></div></section>`;
     $("#rev").onclick=()=>{$("#ans").innerHTML=`<div class="ans">${esc(c[2])}</div>
-      <div class="row" style="margin-top:12px"><button class="btn" id="ok">Konnte ich</button><button class="btn sec" id="no">Nochmal üben</button></div>`;
+      <div class="btns" style="margin-top:12px"><button class="btn" id="ok">Konnte ich</button><button class="btn ghost" id="no">Nochmal üben</button></div>`;
       $("#ok").onclick=()=>{S.c[i]=1;save();pos++;show()};$("#no").onclick=()=>{delete S.c[i];save();pos++;show()}};
   };
-  $("#view").innerHTML=`<div class="panel"><h2>Fachgespräch üben</h2>
-    <p class="muted small">Im Kundenauftrag zählt das Fachgespräch 30 %. Diese Karten trainieren typische Prüferfragen: begründen, erklären, Fehler eingrenzen, Kunden beraten.</p>
-    <div class="row" id="grp">${groups.map(x=>`<button class="btn sec" data-g="${esc(x)}" style="padding:6px 12px;font-size:17px">${esc(x)}</button>`).join("")}</div>
-    <div id="cardArea"></div></div>`;
+  V(`<div class="sec-h" style="margin-top:0"><h2>Fachgespräch üben</h2></div>
+    <p class="small muted">Im Kundenauftrag zählt das Fachgespräch 30 %. Die Karten trainieren typische Prüferfragen.</p>
+    <div class="chips">${groups.map(x=>`<button class="chip" data-g="${esc(x)}">${esc(x)}</button>`).join("")}</div>
+    <div id="cardArea" class="stack"></div>`);
+  const mark=()=>document.querySelectorAll("[data-g]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.g===g));
   document.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{g=b.dataset.g;mark();build()});
-  const mark=()=>document.querySelectorAll("[data-g]").forEach(b=>{const on=b.dataset.g===g;b.style.background=on?"var(--steel)":"";b.style.color=on?"var(--sheet)":""});
   mark();build();
 }
 
@@ -382,7 +402,7 @@ function viewKarten(){
 load();
 Promise.all([fetch("questions.json").then(r=>r.json()),fetch("cards.json").then(r=>r.json())])
 .then(([q,c])=>{Q=q;C=c;header();go(location.hash.slice(1))})
-.catch(()=>{$("#view").innerHTML=`<div class="panel"><h2>Fragen konnten nicht geladen werden</h2><p>Bitte die Seite neu laden.</p></div>`});
+.catch(()=>V(`<section class="card"><h2>Fragen konnten nicht geladen werden</h2><p>Bitte die Seite neu laden.</p></section>`));
 </script>
 
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js"));</script>
