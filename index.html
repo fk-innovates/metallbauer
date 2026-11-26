@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#1f4e79">
+<meta name="theme-color" content="#173d61">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Metallbauer">
@@ -51,8 +51,9 @@ h1,h2,h3{margin:0;font-family:var(--f-disp);font-weight:700;line-height:1.1;text
 .top .inner{display:flex;align-items:center;gap:12px}
 .logo{width:40px;height:40px;flex:none;border-radius:10px;background:rgba(255,255,255,.12);display:grid;place-items:center}
 .top h1{font-size:23px;letter-spacing:.01em}
-.top p{margin:0;font-size:13px;opacity:.8}
+.top p{margin:0;font-size:13px;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .top .grow{flex:1;min-width:0}
+.themeBtn{width:40px;height:40px;flex:none;border-radius:50%;display:grid;place-items:center;color:var(--on-steel);background:rgba(255,255,255,.1)}
 .ring{width:48px;height:48px;flex:none;position:relative}
 .ring svg{display:block}
 .ring span{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-mono);font-size:12px;font-weight:600}
@@ -133,7 +134,8 @@ details p{margin-top:8px}
 
 <header class="top"><div class="inner">
   <div class="logo" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 100 100"><rect x="18" y="14" width="64" height="14" fill="#eef1f3"/><rect x="42" y="28" width="16" height="44" fill="#eef1f3"/><rect x="18" y="72" width="64" height="14" fill="#eef1f3"/><path d="M26 52 L43 66 L76 34" fill="none" stroke="#f2a33a" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-  <div class="grow"><h1>Metallbauer</h1><p>Gesellenprüfung · Konstruktionstechnik</p></div>
+  <div class="grow"><h1>Metallbauer</h1><p>Gesellenprüfung · Konstruktion</p></div>
+  <button class="themeBtn" id="themeBtn" aria-label="Hell oder dunkel umschalten"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path id="themeIco" d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></button>
   <div class="ring" title="sicher gelernt"><svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="5"/><circle id="ringArc" cx="24" cy="24" r="20" fill="none" stroke="#f2a33a" stroke-width="5" stroke-linecap="round" stroke-dasharray="0 126" transform="rotate(-90 24 24)"/></svg><span id="ringTxt">0%</span></div>
 </div></header>
 
@@ -397,6 +399,13 @@ function viewKarten(){
   document.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{g=b.dataset.g;mark();build()});
   mark();build();
 }
+
+/* ---------- Hell/Dunkel (Standard: dunkel) ---------- */
+const MOON="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z",SUN="M12 4V2M12 22v-2M4 12H2M22 12h-2M5.6 5.6 4.2 4.2M19.8 19.8l-1.4-1.4M5.6 18.4l-1.4 1.4M19.8 4.2l-1.4 1.4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z";
+function setTheme(t){document.documentElement.setAttribute("data-theme",t);$("#themeIco").setAttribute("d",t==="dark"?SUN:MOON);try{localStorage.setItem("mb-theme",t)}catch(e){}}
+let theme="dark";try{theme=localStorage.getItem("mb-theme")||"dark"}catch(e){}
+setTheme(theme);
+$("#themeBtn").onclick=()=>setTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark");
 
 /* ---------- Start ---------- */
 load();
