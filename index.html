@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#2e3a46">
+<meta name="theme-color" content="#252c34">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Metallbauer">
@@ -20,7 +20,8 @@
 /* Layout: App-Aufbau fürs Handy – ruhiger Kopf mit Logo-Kachel, eine Spalte mit Karten, feste Tab-Leiste unten (kein Hochscrollen zur Navigation) */
 :root{
   --bg:#eef2f6; --surface:#ffffff; --sunk:#f5f7fa; --ink:#16202a; --muted:#61707d; --line:#dbe2e9;
-  --steel:#1f4e79; --steel-2:#2b67a0; --steel-soft:#e3edf7; --on-steel:#ffffff; --spark:#f2a33a;
+  --steel:#1f4e79; --steel-2:#2467a6; --steel-soft:#e4edf6; --on-steel:#ffffff; --spark:#f2a33a;
+  --accent:#2467a6; --accent-ink:#ffffff; --tabbg:#ffffff;
   --ok:#1b7d48; --ok-soft:#e1f3e8; --bad:#b4261d; --bad-soft:#fbe4e2;
   --shadow:0 1px 2px rgba(22,32,42,.06),0 4px 14px rgba(22,32,42,.06);
   --f-disp:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
@@ -29,13 +30,15 @@
   --tabh:64px;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#2e3a46; --surface:#3a4755; --sunk:#34414e; --ink:#f1f4f7; --muted:#b9c4ce; --line:#4b5a69;
-  --steel:#2b5a86; --steel-2:#93c2ef; --steel-soft:#3b5874; --on-steel:#ffffff; --spark:#f4a843;
-  --ok:#6fdca2; --ok-soft:#2b5039; --bad:#f69c93; --bad-soft:#5a3432; --shadow:0 1px 2px rgba(0,0,0,.18); color-scheme:dark}}
+  --bg:#252c34; --surface:#2f3842; --sunk:#29313a; --ink:#eef1f4; --muted:#a3adb7; --line:#3b4651;
+  --steel:#1f4e79; --steel-2:#86b9e8; --steel-soft:#2c3e52; --on-steel:#ffffff; --spark:#f2a33a;
+  --accent:#2f78bd; --accent-ink:#ffffff; --tabbg:#20262d;
+  --ok:#5fcf91; --ok-soft:#263f33; --bad:#f08f86; --bad-soft:#4a2d2c; --shadow:0 1px 2px rgba(0,0,0,.18); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#2e3a46; --surface:#3a4755; --sunk:#34414e; --ink:#f1f4f7; --muted:#b9c4ce; --line:#4b5a69;
-  --steel:#2b5a86; --steel-2:#93c2ef; --steel-soft:#3b5874; --on-steel:#ffffff; --spark:#f4a843;
-  --ok:#6fdca2; --ok-soft:#2b5039; --bad:#f69c93; --bad-soft:#5a3432; --shadow:0 1px 2px rgba(0,0,0,.18); color-scheme:dark}
+  --bg:#252c34; --surface:#2f3842; --sunk:#29313a; --ink:#eef1f4; --muted:#a3adb7; --line:#3b4651;
+  --steel:#1f4e79; --steel-2:#86b9e8; --steel-soft:#2c3e52; --on-steel:#ffffff; --spark:#f2a33a;
+  --accent:#2f78bd; --accent-ink:#ffffff; --tabbg:#20262d;
+  --ok:#5fcf91; --ok-soft:#263f33; --bad:#f08f86; --bad-soft:#4a2d2c; --shadow:0 1px 2px rgba(0,0,0,.18); color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
@@ -71,12 +74,18 @@ p{margin:0}
 .bar{height:8px;background:var(--sunk);border:1px solid var(--line);border-radius:6px;overflow:hidden}
 .bar>i{display:block;height:100%;background:var(--ok);border-radius:6px}
 .bar.thin{height:5px;border:0;background:var(--line)}
-.bar.steel>i{background:var(--steel-2)}
+.bar.steel>i{background:var(--accent)}
 
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--steel-2);color:#fff;border-radius:12px;padding:13px 18px;font-weight:600;font-size:17px;min-height:50px;width:100%}
-:root[data-theme="dark"] .btn{color:#0d1a26}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn{color:#0d1a26}}
-.btn.ghost{background:var(--steel-soft);color:var(--steel-2)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:var(--accent-ink);border-radius:12px;padding:13px 18px;font-weight:600;font-size:17px;min-height:50px;width:100%}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+/* Hero-Karte: die eine farbige Fläche der Seite */
+.hero{background:linear-gradient(140deg,#2c6aa5 0%,#1c4770 100%);border:0;color:#fff;box-shadow:0 6px 20px rgba(16,40,66,.25)}
+.hero .muted{color:rgba(255,255,255,.72)}
+.hero .bar{background:rgba(255,255,255,.18);border:0}
+.hero .bar>i{background:var(--spark)}
+.hero .btn{background:#fff;color:#1c4770}
+.hero .btn.ghost{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.22)}
+.hero .btn:disabled{opacity:.55}
 .btn:disabled{opacity:.45;cursor:default}
 .btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .btns.one{grid-template-columns:1fr}
@@ -114,7 +123,7 @@ button.li:active{background:var(--sunk)}
 
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{padding:8px 14px;border-radius:20px;background:var(--surface);border:1px solid var(--line);font-weight:600;font-size:15px}
-.chip[aria-pressed="true"]{background:var(--steel-2);border-color:var(--steel-2);color:#fff}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .ans{border-top:1px dashed var(--line);padding-top:12px;line-height:1.5}
 .pill{display:inline-block;padding:3px 12px;border-radius:20px;font-weight:700;font-size:15px}
 .pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.bad{background:var(--bad-soft);color:var(--bad)}
@@ -122,7 +131,7 @@ details summary{cursor:pointer;font-weight:600;color:var(--steel-2)}
 details p{margin-top:8px}
 
 /* Tab-Leiste */
-.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--tabbg);border-top:1px solid var(--line);
   padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
 .tabs .row{max-width:680px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);height:var(--tabh)}
 .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11.5px;font-weight:600;color:var(--muted);position:relative}
@@ -137,7 +146,7 @@ details p{margin-top:8px}
   <div class="grow"><span class="eyebrow">Gesellenprüfung</span><h1>Metallbauer</h1></div>
   <button class="themeBtn" id="themeBtn" aria-label="Hell oder dunkel umschalten"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path id="themeIco" d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></button>
 </div>
-<div class="inner"><div class="subline"><span>Fachrichtung Konstruktionstechnik</span><span><b class="num" id="ringTxt">0 %</b> sicher</span></div></div>
+<div class="inner"><div class="subline"><span>Fachrichtung Konstruktionstechnik</span><span>Prüfung 2027</span></div></div>
 </header>
 
 <main class="inner"><div id="view" class="stack"><div class="card"><p class="muted">Fragen werden geladen …</p></div></div></main>
@@ -177,7 +186,7 @@ const openErrors=()=>Q.map((_,i)=>i).filter(i=>st(i).w>0&&!known(i));
 function record(i,ok){const o=st(i);o.s++;ok?(o.c++,o.streak++):(o.w++,o.streak=0);S.q[i]=o;save();header()}
 function header(){
   const k=Q.filter((_,i)=>known(i)).length;const p=Q.length?Math.round(k/Q.length*100):0;
-  $("#ringTxt").textContent=p+" %";
+
   const e=openErrors().length;const d=$("#errDot");d.hidden=!e;d.textContent=e>99?"99+":e;
 }
 function grade(p){
@@ -216,7 +225,7 @@ function viewStart(){
   const k=Q.filter((_,i)=>known(i)).length,seen=Q.filter((_,i)=>st(i).s>0).length,p=Q.length?Math.round(k/Q.length*100):0;
   const err=openErrors().length;
   V(`
-  <section class="card">
+  <section class="card hero">
     <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px">
       <div><p class="small muted">Sicher gelernt</p><div class="big num">${p}<span style="font-size:28px">%</span></div></div>
       <p class="small muted" style="text-align:right">${k} von ${Q.length} Fragen<br>${seen} schon gesehen</p>
@@ -368,7 +377,7 @@ function viewFehler(){
   const ids=openErrors();
   if(!ids.length){V(`<section class="card"><h2 style="font-size:26px">Keine offenen Fehler</h2><p class="muted">Falsch beantwortete Fragen landen hier, bis du sie zweimal hintereinander richtig hast.</p><button class="btn" id="l">Lernen</button></section>`);$("#l").onclick=()=>{location.hash="lernen"};return}
   const by={};ids.forEach(i=>by[Q[i][0]]=(by[Q[i][0]]||0)+1);
-  V(`<section class="card"><p class="small muted">Offene Fehler</p><div class="big num">${ids.length}</div>
+  V(`<section class="card hero"><p class="small muted">Offene Fehler</p><div class="big num">${ids.length}</div>
     <button class="btn" id="go">Alle wiederholen</button></section>
     <div class="sec-h"><h2>Nach Thema</h2></div>
     <div class="list">${Object.entries(by).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`<button class="li" data-ec="${c}"><div class="body"><span class="t">${CATS[c].n}</span></div><span class="pct num">${n}</span>${CHEV}</button>`).join("")}</div>`);
